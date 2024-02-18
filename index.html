@@ -1,5 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 8px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
 <body>
-    <link rel="stylesheet" type="text/css" href="style.css">
     <div class="container">
         <h1>Calculating Food</h1>
         <label for="calories_add">Calories eaten</label>
@@ -7,8 +57,8 @@
         <label for="calories_delete">Calories lost</label>
         <input type="text" id="calories_delete">
         <button onclick="submit()">View result</button>
-        <button onclick="Saving()">Save</button>
-        <button onclick="ViewSave()">View Save</button>
+        <button onclick="save()">Save</button>
+        <button onclick="viewSave()">View Save</button>
         <div id="result"></div>
         <div id="calendar" style="display: none;"></div>
         <label for="date">Select a date:</label>
@@ -22,7 +72,59 @@
             const today = `${year}-${month}-${day}`;
 
             dateInput.value = today;
+
+            function submit() {
+                try {
+                    let calories_more = parseInt(document.getElementById('calories_add').value);
+                    let calories_less = parseInt(document.getElementById('calories_delete').value);
+                    let calories_tol = calories_more - calories_less;
+                    let weight_tol = calories_tol / 7000;
+                    let weight_gain = calories_more / 7000;
+                    let weight_less = calories_less / 7000;
+                    document.getElementById('result').innerText = `Weight gained: ${weight_gain.toFixed(3)} kg\nWeight loss: ${weight_less.toFixed(3)} kg\nTotal weight: ${weight_tol.toFixed(3)} kg`;
+                } catch (e) {
+                    let result = document.getElementById('result');
+                    if (!calories_more || !calories_less) {
+                        result.innerText = 'Error: Please enter values in both fields';
+                    } else {
+                        result.innerText = 'Error: Please enter number variables only';
+                    }
+                }
+            }
+
+            function save() {
+                let date = document.getElementById('date').value;
+                let weightData = {
+                    date: date,
+                    weightGain: parseFloat(weight_gain.toFixed(3)),
+                    weightLoss: parseFloat(weight_less.toFixed(3)),
+                    totalWeight: parseFloat(weight_tol.toFixed(3))
+                };
+                let savedData = localStorage.getItem('weightData');
+                if (savedData) {
+                    savedData = JSON.parse(savedData);
+                    savedData.push(weightData);
+                } else {
+                    savedData = [weightData];
+                }
+                localStorage.setItem('weightData', JSON.stringify(savedData));
+                alert('Data saved successfully!');
+            }
+
+            function viewSave() {
+                let savedData = localStorage.getItem('weightData');
+                if (savedData) {
+                    savedData = JSON.parse(savedData);
+                    let view = '';
+                    savedData.forEach(data => {
+                        view += `Date: ${data.date}, Weight gained: ${data.weightGain} kg, Weight loss: ${data.weightLoss} kg, Total weight: ${data.totalWeight} kg\n`;
+                    });
+                    alert(view);
+                } else {
+                    alert('No saved data found.');
+                }
+            }
         </script>
-        <script src="function.js"></script>
     </div>
 </body>
+</html>
