@@ -1,0 +1,26 @@
+<body>
+    <div class="container">
+        <h1>Calculating Food</h1>
+        <label for="calories_add">Calories eaten</label>
+        <input type="text" id="calories_add">
+        <label for="calories_delete">Calories lost</label>
+        <input type="text" id="calories_delete">
+        <button onclick="submit()">View result</button>
+        <button onclick="Saving()">Save</button>
+        <button onclick="ViewSave()">View Save</button>
+        <div id="result"></div>
+        <div id="calendar" style="display: none;"></div>
+        <label for="date">Select a date:</label>
+        <input type="date" id="date" name="date">
+        <script>
+            const dateInput = document.getElementById('date');
+            const now = new Date();
+            const year = now.getFullYear();
+            let month = (now.getMonth() + 1).toString().padStart(2, '0');
+            let day = now.getDate().toString().padStart(2, '0');
+            const today = `${year}-${month}-${day}`;
+
+            dateInput.value = today;
+        </script>
+    </div>
+</body>
